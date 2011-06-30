@@ -3,11 +3,13 @@
  */
 package com.ds.tools.hudson.crowd;
 
-import java.util.List;
-
-import com.atlassian.crowd.integration.service.cache.BasicCache;
 import com.atlassian.crowd.integration.soap.SOAPGroup;
 import com.atlassian.crowd.integration.soap.SOAPPrincipal;
+import com.atlassian.crowd.service.cache.BasicCache;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Implementation of Atlassian Crowd's BasicCache interface that allows this
@@ -32,6 +34,10 @@ public class NoOpCache implements BasicCache {
     public void addIsUserOrGroup(String name, Boolean isValidUserOrGroup) {
         // TODO Auto-generated method stub
 
+    }
+
+    public void cacheUser(SOAPPrincipal soapPrincipal) {
+        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     /**
@@ -138,12 +144,28 @@ public class NoOpCache implements BasicCache {
         return null;
     }
 
+    public void cacheAllGroupNames(List list) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public void cacheAncestorsForGroups(Map<String, Set<String>> stringSetMap) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public Map<String, Set<String>> getAncestorsForGroups() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
     /**
      * {@inheritDoc}
      */
     public List getAllMembers(String groupName) {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    public void cacheAllMembers(String s, List list) {
+        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     /**
@@ -154,6 +176,10 @@ public class NoOpCache implements BasicCache {
         return null;
     }
 
+    public void cacheAllMemberships(String s, List list) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -162,12 +188,20 @@ public class NoOpCache implements BasicCache {
         return null;
     }
 
+    public void cacheAllUserNames(List list) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
     /**
      * {@inheritDoc}
      */
     public SOAPGroup getGroup(String groupName) {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    public void cacheGroup(SOAPGroup soapGroup) {
+        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     /**
@@ -290,6 +324,10 @@ public class NoOpCache implements BasicCache {
      */
     public String getGroupName(String s) {
         return null;
+    }
+
+    public void cacheUserWithAttributes(SOAPPrincipal soapPrincipal) {
+        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     /**

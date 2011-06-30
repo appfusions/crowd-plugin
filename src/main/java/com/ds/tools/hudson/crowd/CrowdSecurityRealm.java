@@ -1,13 +1,11 @@
 package com.ds.tools.hudson.crowd;
 
+import com.atlassian.crowd.service.client.ClientProperties;
 import groovy.lang.Binding;
 import hudson.Extension;
 import hudson.model.Descriptor;
 import hudson.security.SecurityRealm;
 import hudson.util.spring.BeanBuilder;
-
-import java.util.Properties;
-
 import org.acegisecurity.AuthenticationManager;
 import org.acegisecurity.userdetails.UserDetailsService;
 import org.apache.log4j.Logger;
@@ -15,7 +13,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.XmlWebApplicationContext;
 
-import com.atlassian.crowd.integration.service.soap.client.ClientProperties;
+import java.util.Properties;
 
 public class CrowdSecurityRealm extends SecurityRealm {
     private static org.apache.log4j.Logger log = Logger.getLogger(CrowdSecurityRealm.class);
@@ -54,8 +52,7 @@ public class CrowdSecurityRealm extends SecurityRealm {
          * crowdConfigContext .setConfigLocations(new String[] {
          * "classpath:/applicationContext-HudsonCrowdClient.xml" });
          */
-        crowdConfigContext
-                .setConfigLocations(new String[] { "classpath:/applicationContext-CrowdClient.xml" });
+        crowdConfigContext.setConfigLocations(new String[] { "classpath:/applicationContext-CrowdClient.xml" });
         crowdConfigContext.refresh();
 
         // load the Hudson-Crowd configuration from Crowd.groovy
@@ -71,14 +68,12 @@ public class CrowdSecurityRealm extends SecurityRealm {
             props.setProperty("application.password", applicationPassword);
             props.setProperty("crowd.server.url", url);
             props.setProperty("session.validationinterval", "5");
-            ClientProperties clientProperties = (ClientProperties) crowdConfigContext
-                    .getBean("clientProperties");
+            ClientProperties clientProperties = (ClientProperties) crowdConfigContext.getBean("clientProperties");
             clientProperties.updateProperties(props);
         } else {
             log.warn("Client properties are incomplete");
         }
 
-        return new SecurityComponents(findBean(AuthenticationManager.class, context), findBean(
-                UserDetailsService.class, context));
+        return new SecurityComponents(findBean(AuthenticationManager.class, context), findBean(UserDetailsService.class, context));
     }
 }
