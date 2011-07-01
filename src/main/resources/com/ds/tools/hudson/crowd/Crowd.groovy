@@ -1,9 +1,12 @@
+import com.atlassian.crowd.integration.acegi.user.CrowdUserDetailsServiceImpl
+import org.acegisecurity.ui.webapp.AuthenticationProcessingFilter
+import com.atlassian.crowd.integration.acegi.RemoteCrowdAuthenticationProvider
+import com.atlassian.crowd.integration.acegi.CrowdSSOAuthenticationProcessingFilter
+import hudson.model.Hudson
+
 import org.acegisecurity.providers.ProviderManager
 import org.acegisecurity.providers.anonymous.AnonymousAuthenticationProvider
 import org.acegisecurity.providers.rememberme.RememberMeAuthenticationProvider
-import com.atlassian.crowd.integration.acegi.user.CrowdUserDetailsServiceImpl
-import com.atlassian.crowd.integration.acegi.RemoteCrowdAuthenticationProvider
-import hudson.model.Hudson
 
 crowdUserDetailsService(CrowdUserDetailsServiceImpl) {
     authenticationManager = ref("crowdAuthenticationManager")
@@ -29,4 +32,20 @@ authenticationManager(ProviderManager) {
             key = "anonymous"
         }
     ]
+}
+
+crowdFilter(AuthenticationProcessingFilter) {
+    authenticationFailureUrl = "/loginError"
+    defaultTargetUrl = "/"
+    filterProcessesUrl = "/j_acegi_security_check"
+    authenticationManager = ref("authenticationManager")
+}
+
+
+crowdSSOFilter(CrowdSSOAuthenticationProcessingFilter) {
+    authenticationFailureUrl = "/loginError"
+    defaultTargetUrl = "/"
+    filterProcessesUrl = "/j_acegi_security_check"
+    authenticationManager = ref("authenticationManager")
+    httpAuthenticator = ref("httpAuthenticator")
 }

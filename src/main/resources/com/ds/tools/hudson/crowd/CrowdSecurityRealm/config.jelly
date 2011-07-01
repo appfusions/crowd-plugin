@@ -8,4 +8,7 @@
     <f:entry title="${%Application Password}" help="/plugin/crowd/help-global-apppassword.html">
       <f:password name="crowd.applicationPassword" value="${instance.applicationPassword}" />
     </f:entry>
+    <f:entry title="${%Enabled Single Sign On}" help="/plugin/crowd/help-global-sso.html">
+      <f:checkbox name="crowd.ssoEnabled" value="${instance.ssoEnabled}" />
+    </f:entry>
 </j:jelly>
