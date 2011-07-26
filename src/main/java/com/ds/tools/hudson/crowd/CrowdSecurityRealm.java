@@ -23,9 +23,6 @@ public class CrowdSecurityRealm extends SecurityRealm {
     private static org.apache.log4j.Logger log = Logger.getLogger(CrowdSecurityRealm.class);
 
     private transient WebApplicationContext crowdGroovyContext;
-    public final String url;
-    public final String applicationName;
-    public final String applicationPassword;
     public final boolean ssoEnabled;
 
     @Extension
@@ -41,10 +38,7 @@ public class CrowdSecurityRealm extends SecurityRealm {
     }
 
     @DataBoundConstructor
-    public CrowdSecurityRealm(String url, String applicationName, String applicationPassword, boolean ssoEnabled) {
-        this.url = url.trim();
-        this.applicationName = applicationName.trim();
-        this.applicationPassword = applicationPassword.trim();
+    public CrowdSecurityRealm(boolean ssoEnabled) {
         this.ssoEnabled = ssoEnabled;
     }
 
@@ -61,22 +55,6 @@ public class CrowdSecurityRealm extends SecurityRealm {
         Binding binding = new Binding();
         builder.parse(getClass().getResourceAsStream("Crowd.groovy"), binding);
         crowdGroovyContext = builder.createApplicationContext();
-
-//        // configure the ClientProperties object
-//        if (applicationName != null || applicationPassword != null || url != null) {
-//            Properties props = new Properties();
-//            props.setProperty("application.name", applicationName);
-//            props.setProperty("application.password", applicationPassword);
-//            props.setProperty("crowd.server.url", url);
-//            props.setProperty("session.validationinterval", "5");
-//            ClientProperties clientProperties = (ClientProperties) crowdConfigContext.getBean("clientProperties");
-//            clientProperties.updateProperties(props);
-//
-//            HudsonCrowdAuthenticationProvider provider = (HudsonCrowdAuthenticationProvider)crowdGroovyContext.getBean("crowdAuthenticationProvider");
-//            provider.setClientProperties(clientProperties);
-//        } else {
-//            log.warn("Client properties are incomplete");
-//        }
 
         return new SecurityComponents(findBean(AuthenticationManager.class, crowdGroovyContext), findBean(UserDetailsService.class, crowdGroovyContext));
     }
@@ -112,7 +90,6 @@ public class CrowdSecurityRealm extends SecurityRealm {
                 break;
             }
         }
-
 
         if (!found) {
             log.warn("Could not find a Filter of instance AuthenticationProcessingFilter to replace with a Crowd one");
