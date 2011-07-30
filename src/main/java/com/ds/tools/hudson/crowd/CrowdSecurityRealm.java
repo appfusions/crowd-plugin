@@ -1,5 +1,6 @@
 package com.ds.tools.hudson.crowd;
 
+import com.atlassian.crowd.integration.http.HttpAuthenticator;
 import groovy.lang.Binding;
 import hudson.Extension;
 import hudson.model.Descriptor;
@@ -11,11 +12,15 @@ import org.acegisecurity.ui.webapp.AuthenticationProcessingFilter;
 import org.acegisecurity.userdetails.UserDetailsService;
 import org.apache.log4j.Logger;
 import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.StaplerRequest;
+import org.kohsuke.stapler.StaplerResponse;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.XmlWebApplicationContext;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import java.io.IOException;
 
 import static org.fest.reflect.core.Reflection.field;
 
@@ -23,7 +28,9 @@ public class CrowdSecurityRealm extends SecurityRealm {
     private static org.apache.log4j.Logger log = Logger.getLogger(CrowdSecurityRealm.class);
 
     private transient WebApplicationContext crowdGroovyContext;
+    private HttpAuthenticator httpAuthenticator;
     public final boolean ssoEnabled;
+
 
     @Extension
     public static final class DescriptorImpl extends Descriptor<SecurityRealm> {
@@ -55,6 +62,7 @@ public class CrowdSecurityRealm extends SecurityRealm {
         Binding binding = new Binding();
         builder.parse(getClass().getResourceAsStream("Crowd.groovy"), binding);
         crowdGroovyContext = builder.createApplicationContext();
+        httpAuthenticator = (HttpAuthenticator) crowdConfigContext.getBean("httpAuthenticator");
 
         return new SecurityComponents(findBean(AuthenticationManager.class, crowdGroovyContext), findBean(UserDetailsService.class, crowdGroovyContext));
     }
@@ -73,6 +81,17 @@ public class CrowdSecurityRealm extends SecurityRealm {
          return (ssoEnabled ? "crowdSSOFilter" : "crowdFilter");
      }
 
+    @Override
+    public void doLogout(StaplerRequest request, StaplerResponse response) throws IOException, ServletException {
+        super.doLogout(request, response);
+        try {
+            httpAuthenticator.logoff(request, response);
+        }
+        catch (Exception e) {
+            log.error("Could not logout SSO user from Crowd", e);
+        }
+    }
+
     private Filter replaceHudsonBasicAuthenticationFilter(Filter filter, AuthenticationProcessingFilter crowdFilter) {
         if (!(filter instanceof ChainedServletFilter)) {
             log.error("Expected to insert the crowd filter into a chained filter but it wasn't there, so just using crowd");
@@ -84,6 +103,7 @@ public class CrowdSecurityRealm extends SecurityRealm {
         boolean found = false;
         Filter[] filters = field("filters").ofType(Filter[].class).in(chainedFilter).get();
         for (int i=0; i < filters.length; i++) {
+            log.error("Found following filters: " + filters[i].getClass());
             if (filters[i] instanceof AuthenticationProcessingFilter) {
                 filters[i] = crowdFilter;
                 found = true;
