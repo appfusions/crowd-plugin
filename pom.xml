@@ -23,9 +23,14 @@
         </developer>
         <developer>
             <id>cgoudie</id>
-            <name>Colin Goudie</name>
+            <name>Colin Goudie (AppFusions)</name>
         </developer>
     </developers>
+    <scm>
+        <connection>scm:git:git@github.com:appfusions/crowd-plugin.git</connection>
+        <developerConnection>scm:git:git@github.com:appfusions/crowd-plugin.git</developerConnection>
+        <url>https://github.com/appfusions/crowd-plugin</url>
+    </scm>
     <build>
         <plugins>
             <plugin>
@@ -84,4 +89,16 @@
         <crowd.version>2.2.7</crowd.version>
         <xfire.version>1.2.6</xfire.version>
     </properties>
+    <distributionManagement>
+        <repository>
+            <id>releases</id>
+            <name>AppFusions Release Repo</name>
+            <url>http://nexus.appfusions.com/content/repositories/releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>snaphots</id>
+            <name>AppFusions Snapshots Repo</name>
+            <url>http://nexus.appfusions.com/content/repositories/snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
 </project>
